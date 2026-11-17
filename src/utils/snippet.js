@@ -205,12 +205,16 @@ export function identifier(fileName, script = '') {
  * @returns {string} The snippet, with a blank line behind it
  */
 export function snippet(name, url, size) {
+    /* Photos come out mostly black with the default threshold, so the snippet
+       dithers them. Atkinson keeps more contrast than Floyd-Steinberg, and an
+       image that is black and white already prints the same either way */
+
     return `const ${name} = new Image();\n` +
            `${name}.src = '${url}';\n` +
            `await ${name}.decode();\n` +
            `\n` +
            `encoder\n` +
-           `    .image(${name}, { width: ${size.width}, height: ${size.height} })\n` +
+           `    .image(${name}, { width: ${size.width}, height: ${size.height}, algorithm: 'atkinson' })\n` +
            `\n`;
 }
 
