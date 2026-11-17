@@ -3,7 +3,7 @@
     import Tabs from './Toolbar/Tabs.svelte';
     import Templates from './Toolbar/Templates.svelte';
 
-    let { onload, view } = $props();
+    let { onload, onpick, view } = $props();
 
 </script>
 
@@ -11,7 +11,7 @@
      the tab bar sits at the end of the last row they leave -->
 
 <div>
-    <Templates {onload}/>
+    <Templates {onload} {onpick}/>
     <Tabs {view} />
 </div>
 

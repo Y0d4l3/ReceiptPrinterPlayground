@@ -16,6 +16,12 @@
         editor.load(template);
     }
 
+    /* Link the image picker of the toolbar to the editor */
+
+    let onpick = (files) => {
+        editor.pick(files);
+    }
+
     /* The script of a link, which the page hands down to the editor once it
        exists */
 
@@ -32,7 +38,7 @@
 
 </script>
 
-<Toolbar {view} {onload} />
+<Toolbar {view} {onload} {onpick} />
 <Editor bind:this={editor} {contents} {model} />
 <!-- The gutter is the colour of the preview behind it, which is the darker
      grey of the paper while the rendered view is shown, as in the inspector -->

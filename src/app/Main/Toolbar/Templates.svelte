@@ -11,7 +11,20 @@
     import qrcodeIcon from '../../../assets/icons/templates/qrcode.svg?raw';
     import pdf417Icon from '../../../assets/icons/templates/pdf417.svg?raw';
 
-    let { onload } = $props();
+    let { onload, onpick } = $props();
+
+    /* A file dialog for local images, which does what dropping them on the
+       editor does: the image is added to the script at the cursor */
+
+    let picker;
+
+    function picked(event) {
+        onpick(event.target.files);
+
+        /* Picking the same file again is a change all the same */
+
+        event.target.value = '';
+    }
 
 </script>
 
@@ -44,6 +57,13 @@
     <Icon data={imagesIcon} />
     Images
 </button>
+
+<button onclick={() => picker.click()} title="Add a local image at the cursor">
+    <Icon data={imagesIcon} />
+    Add image...
+</button>
+
+<input type="file" accept="image/*" multiple hidden bind:this={picker} onchange={picked}>
 
 <button onclick={() => onload('barcodes')}>
     <Icon data={barcodesIcon} />

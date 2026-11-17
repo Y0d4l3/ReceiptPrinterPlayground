@@ -474,6 +474,29 @@
             .catch(() => warn('The image could not be added to the script'));
     }
 
+    /* Images picked with the file dialog of the toolbar rather than dropped.
+       They go in where the cursor is, the way a drop goes in under the pointer,
+       and wait their turn behind any drop that is still busy */
+
+    export function pick(list) {
+        let files = Array.from(list || [])
+            .filter(file => file.type.startsWith('image/'));
+
+        if (files.length === 0 || !editor) {
+            return;
+        }
+
+        let point = place(Math.min(
+            editor.selection.getCursor().row,
+            editor.session.getLength() - 1));
+
+        let anchor = editor.session.doc.createAnchor(point.row, point.column);
+
+        queue = queue
+            .then(() => insert(files, anchor, point.prefix))
+            .catch(() => warn('The image could not be added to the script'));
+    }
+
     /* Where the code goes in: the start of the line under the pointer, unless
        that line is inside a comment, which the code would cut in half. The rows
        of the comment are passed over, and a script that is comment all the way
