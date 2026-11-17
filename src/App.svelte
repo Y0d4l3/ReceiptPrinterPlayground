@@ -108,6 +108,12 @@
                 console.log('Connected', data);
                 device = data;
                 connected = true;
+            },
+            onerror: error => {
+                /* The network driver says why it could not connect, such as a
+                   print server that is down or a printer that is unplugged */
+
+                alert(`Could not connect: ${error.message || error}`);
             }
         });
     }
@@ -133,7 +139,15 @@
 
         if (result.encoder) {
             result.encoder.cut();
-            receiptPrinter.print(result.encoder.encode());
+
+            /* A driver prints asynchronously, so a failed print is a promise
+               that rejects rather than a throw */
+
+            let printing = receiptPrinter.print(result.encoder.encode());
+
+            if (printing && typeof printing.catch === 'function') {
+                printing.catch(error => alert(`Printing failed: ${error.message || error}`));
+            }
         }
     }
 

@@ -253,6 +253,7 @@
                         <option value="usb">USB</option>
                         <option value="serial">Serial</option>
                         <option value="bluetooth">Bluetooth</option>
+                        <option value="network">Node</option>
                     </select>
                 </label>
 

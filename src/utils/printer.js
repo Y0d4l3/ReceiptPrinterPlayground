@@ -20,6 +20,7 @@ import WebUSBReceiptPrinter from '@point-of-sale/webusb-receipt-printer';
 import WebSerialReceiptPrinter from '@point-of-sale/webserial-receipt-printer';
 import WebBluetoothReceiptPrinter from '@point-of-sale/webbluetooth-receipt-printer';
 import ReceiptPrinterRenderer from '@point-of-sale/receipt-printer-renderer';
+import NetworkReceiptPrinter from './network-printer.js';
 
 /* Which driver a browser has: the API each of them is built on, by the name the
    page knows the driver under */
@@ -34,10 +35,18 @@ const APIS = {
  * Whether the browser has the API a driver needs, which is what tells Connect
  * from a Connect that cannot do anything
  *
- * @param  {string}    driver   usb, serial or bluetooth
+ * @param  {string}    driver   usb, serial, bluetooth or network
  * @return {boolean}            Whether the browser can talk to it
  */
-const isSupported = (driver) => APIS[driver] ? APIS[driver] in navigator : false;
+const isSupported = (driver) => {
+    /* The network driver needs nothing but fetch, which every browser has */
+
+    if (driver === 'network') {
+        return 'fetch' in window;
+    }
+
+    return APIS[driver] ? APIS[driver] in navigator : false;
+}
 
 /**
  * Build the driver of a connection, unconnected
@@ -64,6 +73,12 @@ const create = ({ driver, baudrate }) => {
 
     if (driver === 'bluetooth') {
         return new WebBluetoothReceiptPrinter({ renderer: ReceiptPrinterRenderer });
+    }
+
+    /* The print server of the node the page is served from */
+
+    if (driver === 'network') {
+        return new NetworkReceiptPrinter();
     }
 
     return null;
