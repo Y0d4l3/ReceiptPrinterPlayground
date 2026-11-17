@@ -207,14 +207,19 @@ export function identifier(fileName, script = '') {
 export function snippet(name, url, size) {
     /* Photos come out mostly black with the default threshold, so the snippet
        dithers them. Atkinson keeps more contrast than Floyd-Steinberg, and an
-       image that is black and white already prints the same either way */
+       image that is black and white already prints the same either way.
+
+       Raster mode sends whole blocks of rows, where the default column mode
+       sends strips of 24 dots that the printer stops between, which leaves
+       a visible line at every strip. Newer printers such as the TM-T88V
+       print raster images in one go */
 
     return `const ${name} = new Image();\n` +
            `${name}.src = '${url}';\n` +
            `await ${name}.decode();\n` +
            `\n` +
            `encoder\n` +
-           `    .image(${name}, { width: ${size.width}, height: ${size.height}, algorithm: 'atkinson' })\n` +
+           `    .image(${name}, { width: ${size.width}, height: ${size.height}, algorithm: 'atkinson', mode: 'raster' })\n` +
            `\n`;
 }
 
